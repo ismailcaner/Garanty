@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Garanty",
+    "slug": "Garanty",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/garantyicon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/garantystartpage.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#030081"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/garantystartpage.png",
+        "backgroundColor": "#030081"
+      },
+      "package": "com.ismailcaner.Garanty"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5e1ce7f0-20c5-4f98-8de8-1cc2f3470314"
+      }
+    }
+  }
+}

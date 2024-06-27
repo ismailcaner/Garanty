@@ -4,11 +4,11 @@
     "slug": "Garanty",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/garantyicon.png",
+    "icon": "./assets/iconv1.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/garantystartpage.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#030081"
     },
     "ios": {
@@ -16,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/garantystartpage.png",
+        "foregroundImage": "./assets/iconv1.png",
         "backgroundColor": "#030081"
       },
       "package": "com.ismailcaner.Garanty"

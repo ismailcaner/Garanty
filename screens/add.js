@@ -1,20 +1,23 @@
 import React, { useState, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import { useTheme } from "../src/themeContext";
 import style from "../src/style";
+import Datepicker from "../src/components.js/datepicker";
+import CustomText from "../src/components.js/text";
+import CustomTextInput from "../src/components.js/CustomTextInput";
+
 import {
   View,
   TextInput,
   TouchableOpacity,
   Text,
-  Alert,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
 
 const Add = ({ navigation }) => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
@@ -23,12 +26,8 @@ const Add = ({ navigation }) => {
   const [dayDifference, setDayDifference] = useState(0);
   const [productBrand, setProductBrand] = useState("");
   const [productModel, setProductModel] = useState("");
-  const [brandError, setBrandError] = useState(false);
   const brandInputRef = useRef(null);
   const modelInputRef = useRef(null);
-
-  const darkmod = theme === "dark" ? true : false;
-  const darkmodtxt = theme === "dark" ? "white" : "black";
 
   const bitis = new Date(endDate);
   const eday = bitis.getDate();
@@ -76,30 +75,57 @@ const Add = ({ navigation }) => {
     setDayDifference(Math.ceil(differenceInDays));
   };
 
+
+  const toastConfig = {
+    success: (props) => (
+      <BaseToast
+        {...props}
+        style={style.successToast}
+        text1Style={style.successText1}
+        text2Style={style.successText2}
+      />
+    ),
+    error: (props) => (
+      <ErrorToast
+        {...props}
+        style={style.errorToast}
+        text1Style={style.errorText1}
+        text2Style={style.errorText2}
+      />
+    ),
+    info: (props) => (
+      <ErrorToast
+        {...props}
+        style={style.infoToast}
+        text1Style={style.infoText1}
+        text2Style={style.infoText2}
+      />
+    ),
+  };
+  
+
+  const showToast = (type) => {
+    Toast.show({
+      type: type,
+      text1: type === 'success' ? 'Ürün bilgisi!' : type === 'error' ? 'Bitiş Tarihi!' : 'Başlangıç Tarihi!',
+      text2: type === 'success' ? 'Ürün adı giriniz.' : type === 'error' ? 'Bitiş tarihi bugünden farklı ve ileri bir tarih olmalı.' : 'Başlangıç tarihi bitişten büyük veya eşit olamaz.',
+      topOffset: 40,
+      visibilityTime: 4000,
+    });
+  };
+  
   const handleAdd = async () => {
     if (!productBrand) {
-      setBrandError(true);
       brandInputRef.current.focus();
+      showToast('success')
       return;
     } else if (dayDifference <= 0) {
-      Alert.alert(
-        "Bitiş tarihi!",
-        "Bitiş tarihi bugünden farklı ve olmalıdır.",
-        [{ text: "Tamam" }],
-        { cancelable: false }
-      );
+      showToast('error')
       return;
     } else if (endDate <= startDate) {
-      Alert.alert(
-        "Başlangıç tarihi!",
-        "Başlangıç tarihi bitiş tarihinden büyük veya eşit olamaz.",
-        [{ text: "Tamam" }],
-        { cancelable: false }
-      );
+      showToast('info')
       return;
     }
-
-    setBrandError(false);
 
     try {
       const newData = {
@@ -135,6 +161,7 @@ const Add = ({ navigation }) => {
     } catch (error) {
       console.error("Veri kaydedilirken bir hata oluştu:", error);
     }
+    Toast.hide();
   };
 
   return (
@@ -142,42 +169,25 @@ const Add = ({ navigation }) => {
       <View
         style={[style.container, theme === "dark" ? style.darkContainer : null]}
       >
-        <Text
-          style={[
-            style.brandAddPage,
-            theme === "dark" ? style.darkbrandAddPage : null,
-          ]}
-        >
-          Ürün adı
-        </Text>
-
+      <CustomText text={'Ürün adı'}/>
         <TextInput
           ref={brandInputRef}
           style={[
             style.brandBar,
-            theme === "dark" ? style.darkBrandBar : null,
-            brandError ? { borderColor: "#fa5254" } : null,
+            theme === "dark" ? style.darkBrandBar : null
           ]}
           placeholder="Ürün bilgisi giriniz.."
           placeholderTextColor={"grey"}
           value={productBrand}
           onChangeText={(text) => {
             setProductBrand(text);
-            setBrandError(false);
           }}
           returnKeyType="next"
           onSubmitEditing={() => modelInputRef.current.focus()}
         />
+    
 
-        <Text
-          style={[
-            style.descriptionAddPage,
-            theme === "dark" ? style.darkDescriptionAddPage : null,
-          ]}
-        >
-          Açıklama
-        </Text>
-
+      <CustomText text={'Açıklama'}/>
         <TextInput
           ref={modelInputRef}
           style={[
@@ -191,100 +201,32 @@ const Add = ({ navigation }) => {
           multiline
         />
 
-        <Text
-          style={[
-            style.dateTitle,
-            theme === "dark" ? style.darkDateTitle : null,
-          ]}
-        >
-          Garanti
-        </Text>
-
-        <View style={style.datePicker}>
-          <View>
-            <View
-              style={[
-                style.bitisDate,
-                theme === "dark" ? style.darkBitisDate : null,
-              ]}
-            >
-              <TouchableOpacity onPress={showStartDatePicker}>
-                <Text
-                  style={[
-                    style.deneme,
-                    theme === "dark" ? style.darkdeneme : null,
-                  ]}
-                >
-                  Başlangıç
-                </Text>
-                <Text
-                  style={[
-                    style.enddatee,
-                    theme === "dark" ? style.darkenddatee : null,
-                  ]}
-                >
-                  {syear}.{smonth}.{sday}
-                </Text>
-              </TouchableOpacity>
-
-              <DateTimePickerModal
-                isVisible={isStartDatePickerVisible}
-                mode="date"
-                locale="tr"
-                isDarkModeEnabled={darkmod}
-                textColor={darkmodtxt}
-                confirmTextIOS="Seç"
-                onConfirm={onChangeStartDate}
-                cancelTextIOS="İptal"
-                onCancel={hideStartDatePicker}
-              />
-            </View>
-          </View>
-
-          <View>
-            <View
-              style={[
-                style.bitisDate,
-                theme === "dark" ? style.darkBitisDate : null,
-              ]}
-            >
-              <TouchableOpacity onPress={showEndDatePicker}>
-                <Text
-                  style={[
-                    style.deneme,
-                    theme === "dark" ? style.darkdeneme : null,
-                  ]}
-                >
-                  Bitiş
-                </Text>
-                <Text
-                  style={[
-                    style.enddatee,
-                    theme === "dark" ? style.darkenddatee : null,
-                  ]}
-                >
-                  {eyear}.{emonth}.{eday}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <DateTimePickerModal
-              isVisible={isEndDatePickerVisible}
-              mode="date"
-              locale="tr"
-              isDarkModeEnabled={darkmod}
-              textColor={darkmodtxt}
-              confirmTextIOS="Seç"
-              onConfirm={onChangeEndDate}
-              cancelTextIOS="İptal"
-              onCancel={hideEndDatePicker}
-            />
-          </View>
+      <CustomText text={'Garanti'}/>
+        <View style={style.DatePickerMainView}>
+          <Datepicker
+             Title={'Başlangıç'}
+             Tday={sday}
+             Tmonth={smonth}
+             Tyear={syear}
+             onPress={showStartDatePicker}
+             isVisible={isStartDatePickerVisible}
+             onConfirm={onChangeStartDate}
+             onCancel={hideStartDatePicker} />
+          <Datepicker
+             Title={'Bitiş'}
+             Tday={eday}
+             Tmonth={emonth}
+             Tyear={eyear}
+             onPress={showEndDatePicker}
+             isVisible={isEndDatePickerVisible}
+             onConfirm={onChangeEndDate}
+             onCancel={hideEndDatePicker} />
         </View>
 
         <View style={style.VazKayBtns}>
           <TouchableOpacity
             style={[style.vazBtn, theme === "dark" ? style.darkVazBtn : null]}
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("Home" , Toast.hide())}
           >
             <Text
               style={[style.vazTxt, theme === "dark" ? style.darkVazTxt : null]}
@@ -303,6 +245,7 @@ const Add = ({ navigation }) => {
               Ekle
             </Text>
           </TouchableOpacity>
+          
         </View>
       </View>
     </TouchableWithoutFeedback>

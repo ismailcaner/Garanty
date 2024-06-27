@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import style from "../src/style";
 import { useTheme } from "../src/themeContext";
+import CustomTextInput from "../src/components.js/CustomTextInput";
+import Empty1 from "../src/components.js/empty";
+
 
 import {
   StatusBar,
   View,
   Image,
-  TextInput,
   TouchableOpacity,
   Text,
   FlatList,
@@ -26,30 +28,26 @@ import {
 } from "../src/color";
 
 const Home = ({ navigation, route }) => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   const [data, setData] = useState([]);
   const [refresh] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isFocused, setIsFocused] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(null);
-  const focus = () => setIsFocused(true);
-  const blur = () => setIsFocused(false);
 
-  const günkaldı = " gün kaldı";
   const doldu = "Doldu";
   const addicon = require("../assets/add.png");
   const x = require("../assets/close.png");
   const trash = require("../assets/trash2.png");
 
+  const [value, setValue] = useState();
+
   useEffect(() => {
     gunfarki();
     fetchData();
-    const intervalId = setInterval(gunfarki, 60000);
-    return () => clearInterval(intervalId);
-  }, [route.params?.refresh]);
+  }, [refresh]);
 
   const gunfarki = async () => {
     try {
@@ -71,11 +69,19 @@ const Home = ({ navigation, route }) => {
             );
 
             const oneDay = 1000 * 60 * 60 * 24;
-            const farkMilisaniye = Math.abs(bitisGunAyYil - simdikiGunAyYil);
-            const farkGun = Math.ceil(farkMilisaniye / oneDay);
+            const oneMount = oneDay * 30;
+            const farkMilisaniye = (bitisGunAyYil - simdikiGunAyYil);
 
-            item.kalangün = farkGun > 0 ? farkGun : 0;
-            console.log(item.kalangün);
+            let farkGun;
+            let farkAy
+         
+              farkAy = Math.floor(farkMilisaniye / oneMount);
+              item.kalanAy = farkAy;
+          
+              farkGun = Math.floor(farkMilisaniye / oneDay);
+              item.kalangün = farkGun;
+
+            console.log(item.kalangün || item.kalanAy);
           }
           return item;
         });
@@ -91,6 +97,7 @@ const Home = ({ navigation, route }) => {
     if (route.params?.refresh) {
       fetchData();
       gunfarki();
+      fetchSelectedFormat();
       navigation.setParams({ refresh: false });
     }
   });
@@ -140,39 +147,63 @@ const Home = ({ navigation, route }) => {
     await fetchData();
     await gunfarki();
     handleToggleDeleteMode();
+    fetchSelectedFormat();
     setRefreshing(false);
   };
+
+  const fetchSelectedFormat = async () => {
+    try {
+      const storedFormat = await AsyncStorage.getItem('selectedFormat');
+      if (storedFormat !== null) {
+        setValue(storedFormat);
+      }
+    } catch (error) {
+      console.error('AsyncStorage hatası:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchSelectedFormat = async () => {
+      try {
+        const storedFormat = await AsyncStorage.getItem('selectedFormat');
+        if (storedFormat !== null) {
+          setValue(storedFormat);
+        }
+      } catch (error) {
+        console.error('AsyncStorage hatası:', error);
+      }
+    };
+    fetchSelectedFormat();
+  }, []);
 
   return (
     <View
       style={[style.container, theme === "dark" ? style.darkContainer : null]}
     >
-      <StatusBar />
+          <StatusBar backgroundColor={ theme === "dark" ? '#18181b' : 'white'} barStyle={ theme === "dark" ? 'light-content' : 'dark-content'} />
+
       <View style={style.searchrow}>
-        <TextInput
-          style={[
-            style.searchbar,
-            theme === "dark" ? style.darksearchbar : null,
-          ]}
-          placeholder="Ara.."
-          placeholderTextColor={"grey"}
-          onFocus={focus}
-          onBlur={blur}
-          onChangeText={handleSearch}
-          onKeyPress={handleSearch}
-          value={searchQuery}
-        />
+      {data.length > 0 ? ( 
+        <CustomTextInput
+        CustomPlaceholder={'Ara..'}
+        CustomonChangeText={handleSearch}
+        CustomonKeyPress={handleSearch}
+        Customvalue={searchQuery} />
+        ) : null }
+
       </View>
 
       <View style={style.productlist}>
+        
         <Text
           style={[
             style.producttitle,
             theme === "dark" ? style.darkProducttitle : null,
           ]}
         >
-          Ürünler
+           {data.length > 0 ? ( 'Ürünler' ): null }
         </Text>
+        
 
         {data.length > 0 ? (
           <FlatList
@@ -196,7 +227,7 @@ const Home = ({ navigation, route }) => {
                         theme === "dark" ? style.darkProductbrand : null,
                       ]}
                     >
-                      {item === selectedProduct ? "Garanti" : item.brand}
+                      {item.brand}
                     </Text>
 
                     <Text
@@ -240,20 +271,20 @@ const Home = ({ navigation, route }) => {
                       >
                         {isDeleteMode === item.id ? (
                           <View style={style.deleteBtns}>
+                                <TouchableOpacity
+                                onPress={() => handleDelete(item.id)}
+                              >
                             <View
                               style={[
                                 style.delete,
                                 theme === "dark" ? style.darkDelete : null,
                               ]}
                             >
-                              <TouchableOpacity
-                                onPress={() => handleDelete(item.id)}
-                              >
                                 <Text style={style.yesDeleteBtn}>
                                   Evet, sil
                                 </Text>
-                              </TouchableOpacity>
                             </View>
+                            </TouchableOpacity>
                             <View
                               style={[
                                 style.delete,
@@ -286,11 +317,11 @@ const Home = ({ navigation, route }) => {
                         style.productTimeColor,
                         {
                           backgroundColor:
-                            item.kalangün > 210
+                            item.kalanAy > 6
                               ? green
-                              : item.kalangün > 90
+                              : item.kalanAy > 3
                               ? grey
-                              : item.kalangün > 30
+                              : item.kalanAy > 1
                               ? yellow
                               : red,
                         },
@@ -301,11 +332,11 @@ const Home = ({ navigation, route }) => {
                           style.calendar,
                           {
                             tintColor:
-                              item.kalangün > 210
+                              item.kalanAy > 6
                                 ? greentxt
-                                : item.kalangün > 90
+                                : item.kalanAy > 3
                                 ? greytxt
-                                : item.kalangün > 30
+                                : item.kalanAy > 1
                                 ? yellowtxt
                                 : redtxt,
                           },
@@ -317,19 +348,17 @@ const Home = ({ navigation, route }) => {
                           style.productTimeColor,
                           {
                             color:
-                              item.kalangün > 210
+                              item.kalanAy > 6
                                 ? greentxt
-                                : item.kalangün > 90
+                                : item.kalanAy > 3
                                 ? greytxt
-                                : item.kalangün > 30
+                                : item.kalanAy > 1
                                 ? yellowtxt
                                 : redtxt,
                           },
                         ]}
                       >
-                        {item.kalangün === 0
-                          ? doldu
-                          : `${item.kalangün + günkaldı}`}
+                        {item.kalangün <= 0 ? doldu : (value === 'month' && item.kalanAy > 0) ? `${item.kalanAy} Ay kaldı` : `${item.kalangün} gün kaldı`}
                       </Text>
                     </View>
                   </View>
@@ -338,23 +367,8 @@ const Home = ({ navigation, route }) => {
             )}
           />
         ) : (
-          <View style={style.empty}>
-            <Image
-              source={require("../assets/file.png")}
-              style={[
-                style.fileicon,
-                theme === "dark" ? style.darkFileicon : null,
-              ]}
-            />
-            <Text
-              style={[
-                style.emptyTxt,
-                theme === "dark" ? style.darkEmptyTxt : null,
-              ]}
-            >
-              Ürün yok
-            </Text>
-          </View>
+    <Empty1
+    text={'Ürün yok'} />
         )}
       </View>
 

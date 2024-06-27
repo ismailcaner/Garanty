@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 export default StyleSheet.create({
+  
   container: {
     flex: 1,
   },
@@ -13,43 +14,6 @@ export default StyleSheet.create({
     marginTop: 10,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  searchbar: {
-    borderWidth: 1,
-    borderColor: "white",
-    height: 50,
-    flex: 1,
-    borderRadius: 10,
-    marginHorizontal: 10,
-    paddingHorizontal: 10,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-
-  darksearchbar: {
-    backgroundColor: "#27272a",
-    borderColor: "grey",
-    color: "white",
-  },
-
-  empty: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-
-  emptyTxt: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "rgba(0, 0, 0, 0.2)",
-  },
-
-  darkEmptyTxt: {
-    color: "grey",
   },
 
   addBtn: {
@@ -171,19 +135,6 @@ export default StyleSheet.create({
     alignItems: "center",
   },
 
-  brandAddPage: {
-    fontSize: 15,
-    fontWeight: "bold",
-    marginHorizontal: 20,
-    marginBottom: 5,
-    marginTop: 20,
-    color: "rgba(0, 0, 0, 0.4)",
-  },
-
-  darkbrandAddPage: {
-    color: "grey",
-  },
-
   brandBar: {
     borderWidth: 1,
     padding: 15,
@@ -203,19 +154,6 @@ export default StyleSheet.create({
     color: "white",
   },
 
-  descriptionAddPage: {
-    fontSize: 15,
-    fontWeight: "bold",
-    marginHorizontal: 20,
-    marginBottom: 5,
-    marginTop: 20,
-    color: "rgba(0, 0, 0, 0.4)",
-  },
-
-  darkDescriptionAddPage: {
-    color: "grey",
-  },
-
   descriptionBar: {
     borderWidth: 1,
     padding: 15,
@@ -233,39 +171,6 @@ export default StyleSheet.create({
     backgroundColor: "#27272a",
     borderColor: "grey",
     color: "white",
-  },
-
-  dateTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    marginHorizontal: 20,
-    marginBottom: 25,
-    marginTop: 20,
-    color: "rgba(0, 0, 0, 0.4)",
-  },
-
-  darkDateTitle: {
-    color: "grey",
-  },
-
-  bitisDate: {
-    alignItems: "center",
-    flexDirection: "",
-    borderWidth: 1,
-    borderRadius: 10,
-    backgroundColor: "white",
-    borderColor: "white",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.0,
-    shadowRadius: 5,
-  },
-
-  darkBitisDate: {
-    backgroundColor: "#27272a",
-    borderColor: "grey",
-    borderWidth: 1,
-    shadowOpacity: 0,
   },
 
   VazKayBtns: {
@@ -336,26 +241,9 @@ export default StyleSheet.create({
     height: 15,
   },
 
-  calendarAddPage: {
-    width: 22,
-    height: 22,
-    marginLeft: 6,
-    tintColor: "grey",
-  },
-
-  datePicker: {
+  DatePickerMainView: {
     justifyContent: "space-evenly",
     flexDirection: "row",
-  },
-
-  fileicon: {
-    height: 20,
-    width: 20,
-    tintColor: "rgba(0, 0, 0, 0.2)",
-  },
-
-  darkFileicon: {
-    tintColor: "grey",
   },
 
   selectedProductText: {
@@ -404,23 +292,60 @@ export default StyleSheet.create({
     borderColor: "black",
   },
 
-  enddatee: {
-    fontSize: 18,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
+  successToast: {
+    borderWidth:2,
+    borderLeftWidth:2,
+    borderColor:'#1f8722',
+    borderLeftColor:'#1f8722',
+    borderRadius:'100%',
+    backgroundColor:'#def1d7',
+    height:50,
+    zIndex:9999
   },
 
-  darkenddatee: {
-    color: "white",
+  successText1: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1f8722'
+  },
+  successText2: {
+    fontSize: 12,
+    color: '#1f8722'
   },
 
-  deneme: {
-    textAlign: "center",
-    fontWeight: "bold",
-    paddingTop: 5,
+  errorToast: {
+    borderWidth:2,
+    borderLeftWidth:2,
+    borderColor:'#d9100a',
+    borderLeftColor:'#d9100a',
+    borderRadius:100,
+    backgroundColor:'#fae1db',
   },
 
-  darkdeneme: {
-    color: "grey",
+  errorText1: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#d9100a',
   },
+  errorText2: {
+    fontSize: 12,
+    color: '#d9100a'
+  },
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+ 
+
 });

@@ -6,5 +6,16 @@ module.exports = {
     yellow: '#fffaea',
     yellowtxt: '#bf5f28',
     red:'#fef3f2',
-    redtxt:'#be4239'
+    redtxt:'#be4239',
+
+    darkbg:'#27272a',
+    darkWhiteTxt:'white',
+    darkBorderColor:'grey',
+
+    WhiteBg:'white',
+
+    txtWhite:'white',
+    txtBlack:'black'
+
+
 }
